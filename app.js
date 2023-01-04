@@ -64,7 +64,7 @@ passport.use(new LocalStrategy({
     }
   })
   .then(async(user) => {
-    const result = await bcyrpt.compare(password, user.password);
+    const result = await bcrypt.compare(password, user.password);
     if(result){
       return done(null,user);
     } else{
@@ -142,5 +142,20 @@ app.get('/dashboard',(request,response)=>{
     csrfToken: request.csrfToken(),
   });
 });
+
+app.get('/login',(request,response)=>{
+  response.render('login',{
+    title:"Login",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.post('/session',passport.authenticate('local',{
+  failureRedirect: '/login',
+  failureFlash: true,
+}),(request,response)=>{
+  console.log(request.user);
+  response.redirect('/dashboard');
+})
 
 module.exports = app;
