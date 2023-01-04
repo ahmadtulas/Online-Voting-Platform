@@ -12,7 +12,7 @@ const connectEnsureLogin = require('connect-ensure-login');
 const session = require('express-session');
 const LocalStrategy = require('passport-local');
 
-const bcyrpt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const flash = require('connect-flash');
@@ -41,6 +41,11 @@ app.use(session({
   }
 }))
 
+// user model imported here
+const {
+  Users,
+} = require("./models");
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((request, response, next)=>{
@@ -52,7 +57,7 @@ passport.use(new LocalStrategy({
   usernameField: 'email',
   password: 'password',
 },(username, password, done) => {
-  User.findOne({
+  Users.findOne({
     where:{
       email:username,
       
@@ -81,7 +86,7 @@ passport.serializeUser((user, done)=>{
 });
 
 passport.deserializeUser((id,done) => {
-  User.findByPk(id)
+  Users.findByPk(id)
   .then(user => {
     done(null, user)
   })
@@ -95,6 +100,47 @@ app.get('/', async (request, response)=>{
       title: 'Online Voting Platform',
       csrfToken: request.csrfToken(),
     });
+});
+
+app.get('/signup',(request,response)=>{
+  response.render('signup',{
+    title: 'Sign Up',
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.post("/users", async (request, response) => {
+  let hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  if (request.body.password === "") hashedPwd = "";
+  try {
+    const user = await Users.create({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+      password: hashedPwd,
+    });
+    request.login(user, (err) => {
+      if (err) {
+        console.log(err);
+      }
+      response.redirect("/dashboard");
+    });
+  } catch (error) {
+    console.log(error);
+    if ("errors" in error)
+      request.flash(
+        "error",
+        error.errors.map((error) => error.message)
+      );
+    response.redirect("/signup");
+  }
+});
+
+app.get('/dashboard',(request,response)=>{
+  response.render('dashboard',{
+    title: 'Dashboard',
+    csrfToken: request.csrfToken(),
+  });
 });
 
 module.exports = app;
