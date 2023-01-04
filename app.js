@@ -158,4 +158,14 @@ app.post('/session',passport.authenticate('local',{
   response.redirect('/dashboard');
 })
 
+app.get('/signout',(request,response, next) => {
+  request.logOut((err)=>{
+    if(err)
+    {
+      return next(err);
+    }
+    response.redirect('/');
+  })
+})
+
 module.exports = app;
