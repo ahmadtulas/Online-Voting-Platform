@@ -96,10 +96,16 @@ passport.deserializeUser((id,done) => {
 })
 
 app.get('/', async (request, response)=>{
-    response.render('index', {
+  if(request.user)
+  {
+    response.redirect('/dashboard');
+  }
+  else{  
+  response.render('index', {
       title: 'Online Voting Platform',
       csrfToken: request.csrfToken(),
     });
+  }
 });
 
 app.get('/signup',(request,response)=>{
