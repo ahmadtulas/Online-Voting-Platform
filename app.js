@@ -136,7 +136,7 @@ app.post("/users", async (request, response) => {
   }
 });
 
-app.get('/dashboard',(request,response)=>{
+app.get('/dashboard',connectEnsureLogin.ensureLoggedIn(),(request,response)=>{
   response.render('dashboard',{
     title: 'Dashboard',
     csrfToken: request.csrfToken(),
