@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Elections.belongsTo(models.Users, {
+        foreignKey: "userId",
+      });
+    }
+    static findAllElectionOfUser(userId)
+    {
+      return this.findAll({where:{userId}});
     }
   }
   Elections.init({

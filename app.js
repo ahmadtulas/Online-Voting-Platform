@@ -43,7 +43,7 @@ app.use(session({
 
 // user model imported here
 const {
-  Users,
+  Users,Elections,
 } = require("./models");
 
 app.use(passport.initialize());
@@ -142,9 +142,12 @@ app.post("/users", async (request, response) => {
   }
 });
 
-app.get('/dashboard',connectEnsureLogin.ensureLoggedIn(),(request,response)=>{
+app.get('/dashboard',connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
+  const currentUserId = request.user.id;
+  const elections = await Elections.findAllElectionOfUser(currentUserId);  
   response.render('dashboard',{
     title: 'Dashboard',
+    elections,
     csrfToken: request.csrfToken(),
   });
 });
