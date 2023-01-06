@@ -1,0 +1,14 @@
+<div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-2">
+        <div class="election-list">
+            <p>Total number of election: <%=elections.length%></p>
+        </div>
+        <ul>
+            <% for(let i = 0; i < elections.length; i++) { %>
+            <li>
+                <%= i+1%> : <%= elections[i].name %>
+            </li>
+            <% } %>
+        </ul>
+  </div>
+</div>

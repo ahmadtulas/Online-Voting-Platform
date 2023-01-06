@@ -1,17 +1,25 @@
 <html>
     <head>
-
+        <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet"> 
+    <title><%= title%></title>
     </head>
     <body>
-        <h1>Hello this is the dashboard</h1>
+        <%- include('signout.ejs') %>
         <div class="grid grid-cols-6">
-            <div class="col-start-1">
-                <a class='text-red-800' href="/signout">signout</a>
+            <div class="col-start-3 col-span-2">
+                <h1>Hello this is the dashboard</h1>
             </div>
-            <div class="election-list">
-                <p>Total number of election: <%=elections.length%></p>
-            </div>
-    
+        </div>
+
+        
+        
+           
+            <%- include('electionList.ejs') %>
         </div>
     </body>
     
