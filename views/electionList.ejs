@@ -3,12 +3,21 @@
         <div class="election-list">
             <p>Total number of election: <%=elections.length%></p>
         </div>
-        <ul>
+        <table class="border-2">
+            <tr>
+                <th>S.No.</th>
+                <th>Election Name</th>
+            </tr>
+        
+    
             <% for(let i = 0; i < elections.length; i++) { %>
-            <li>
-                <%= i+1%> : <%= elections[i].name %>
-            </li>
+            <tr>
+                <td><%= i+1%> </td>
+                <td><%= elections[i].name %></td>
+                
+            </tr>
             <% } %>
-        </ul>
+            
+    </table>
   </div>
 </div>

@@ -177,4 +177,30 @@ app.get('/signout',(request,response, next) => {
   })
 })
 
+app.post(
+  "/addElection",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if(!request.body.electionName)
+    {
+      request.flash("error", "Election name can't be empty");
+      return response.redirect("/dashboard");
+    }  
+    try {
+        const loggedInUser = request.user.id;
+        await Elections.createNewElection(request.body.electionName, loggedInUser);
+        request.flash("success", "New election has been added");
+        return response.redirect("/dashboard");
+      } catch (error) {
+        console.log(error);
+        if ("errors" in error)
+          request.flash(
+            "error",
+            error.errors.map((error) => error.message)
+          );
+        return response.redirect("/dashboard");
+      }
+    }
+);
+
 module.exports = app;
