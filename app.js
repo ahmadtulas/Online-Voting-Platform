@@ -43,7 +43,7 @@ app.use(session({
 
 // user model imported here
 const {
-  Users,Elections,
+  Users,Elections,Questions
 } = require("./models");
 
 app.use(passport.initialize());
