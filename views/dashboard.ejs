@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link href="./css/styles.css" rel="stylesheet"> 
     <title><%= title%></title>
     </head>
     <body>
         <%- include('signout.ejs') %>
-        <div class="grid grid-cols-3">
-            <div class="col-start-2 col-span-1">
-                <h1>Hello this is the dashboard</h1>
+        <div class="grid grid-cols-4">
+            <div class="col-start-2 col-span-2">
+                <h1 class="flex justify-center">Welcome to the dashboard</h1>
                 <div>
                     <% if(messages && messages.error && messages.error.length > 0)  { %>
                         <% for(var i=0; i<messages.error.length; i++) { %>
@@ -34,10 +35,7 @@
                 </form>
             </div>
             
-        </div>
-        
-
-        
+        </div>  
         
            
             <%- include('electionList.ejs') %>
