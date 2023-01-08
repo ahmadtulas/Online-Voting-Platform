@@ -201,6 +201,13 @@ app.post(
         return response.redirect("/dashboard");
       }
     }
+
 );
+app.get('election/:id/ballotForm',
+connectEnsureLogin.ensureLoggedIn(),
+    async (request, response) => {
+    
+});
+
 
 module.exports = app;
