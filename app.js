@@ -215,7 +215,7 @@ connectEnsureLogin.ensureLoggedIn(),
           { model: Voters, include: Votes },
         ],
       });
-      console.log(JSON.stringify(election, null, 2));
+      //console.log(JSON.stringify(election, null, 2));
       return response.render("ballotForm", {
         csrfToken: request.csrfToken(),
         user: request.user,
