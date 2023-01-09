@@ -35,7 +35,7 @@ app.use(cookieParser('ssh!!!! some secret string'));
 app.use(csrf('this_should_be_32_character_long', ['POST', 'PUT', 'DELETE']));
 
 app.use(session({
-  secret:"this is my secret-122333444455555",
+  secret:"this is my secret-112333444455556",
   cookie:{
     maxAge: 24 * 60 * 60 * 1000 // that will be equal to 24 Hours / A whole day
   }
