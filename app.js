@@ -43,7 +43,7 @@ app.use(session({
 
 // user model imported here
 const {
-  Users,Elections,Questions
+  Users,Elections,Questions, Options, Voters, Votes
 } = require("./models");
 
 app.use(passport.initialize());
@@ -203,10 +203,28 @@ app.post(
     }
 
 );
-app.get('election/:id/ballotForm',
+
+// Election Ballot form Management  
+app.get('/elections/:id/ballotForm',
 connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
-    
+    try{
+      const election = await Elections.findByPk(request.params.id, {
+        include: [
+          { model: Questions, include: Options },
+          { model: Voters, include: Votes },
+        ],
+      });
+      console.log(JSON.stringify(election, null, 2));
+      return response.render("ballotForm", {
+        csrfToken: request.csrfToken(),
+        user: request.user,
+        election,
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
 });
 
 

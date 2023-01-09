@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Elections.belongsTo(models.Users, {
         foreignKey: "userId",
       });
+      Elections.hasMany(models.Questions, {
+        foreignKey: "electionId",
+      });
     }
     static findAllElectionOfUser(userId)
     {

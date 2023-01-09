@@ -31,7 +31,11 @@
                 <td class="border border-slate-500"><i class="bi bi-x-octagon-fill"></i></td>
                 <td class="border border-slate-500"><%= i+1%> </td>
                 <td class="border border-slate-500"><%= elections[i].name %></td>
-                <td class="border border-slate-500 content-center"><i class="bi bi-kanban"></i></td>
+                <td class="border border-slate-500 content-center">
+                    <a href="/elections/<%= elections[i].id %>/ballotForm">
+                        <i class="bi bi-kanban"></i>
+                    </a> 
+                </td>
                 <td class="border border-slate-500"><i class="bi bi-rocket-takeoff"></i></td>
                 
                 
