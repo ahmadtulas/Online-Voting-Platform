@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       Questions.belongsTo(models.Elections, {
         foreignKey: "electionId",
       });
+      Questions.hasMany(models.Options, {
+        foreignKey: "questionId",
+      });
+      Questions.hasMany(models.Votes, {
+        foreignKey: "questionId",
+      });
     }
   }
   Questions.init({
