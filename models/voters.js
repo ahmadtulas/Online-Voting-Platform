@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Voters.belongsTo(models.Elections, {
+        foreignKey: "electionId",
+      });
+      Voters.hasMany(models.Votes, {
+        foreignKey: "voterId",
+      });
     }
   }
   Voters.init({
