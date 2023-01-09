@@ -215,10 +215,10 @@ connectEnsureLogin.ensureLoggedIn(),
           { model: Voters, include: Votes },
         ],
       });
-      //console.log(JSON.stringify(election, null, 2));
       return response.render("ballotForm", {
         csrfToken: request.csrfToken(),
         user: request.user,
+        title: 'Ballot(Question/Voters)',
         election,
       });
     } catch (error) {
@@ -226,6 +226,25 @@ connectEnsureLogin.ensureLoggedIn(),
       return response.status(422).json(error);
     }
 });
+// Question add request
+app.post(
+  "/question/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try{
+      await Questions.addQuestion(
+        request.body.title,
+        request.body.description,
+        request.params.eid
+      );
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+    catch(error){
+      console.log(error);
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+  }
+);
 
 
 module.exports = app;
