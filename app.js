@@ -231,6 +231,11 @@ app.post(
   "/question/:eid",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    if(!request.body.title)
+    {
+      request.flash("error", "Question can't be empty");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }  
     try{
       await Questions.addQuestion(
         request.body.title,
