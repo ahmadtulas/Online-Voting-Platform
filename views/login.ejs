@@ -1,5 +1,28 @@
 <%- include('publicHeader.ejs') %>
-    <div class="grid grid-cols-6">
+
+<div id="root">
+    <div class="relative w-full">
+        <div class="container relative z-40 mx-auto p-4">
+            <nav class="bg-slate-300 block w-full max-w-screen-2xl rounded-xl shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 border border-white/80 text-white p-3">
+                <div class="container mx-auto flex items-center justify-between text-blue-gray-900">
+                    <p class="text-blue-900 block antialiased font-sans text-sm leading-normal mr-4 ml-2 cursor-pointer py-1.5 font-bold">
+                        <a class='text-green-700' href="/"><i class="bi bi-house-door"></i> Online Voting Platform </a> 
+                    </p>
+                    <div class="hidden lg:block">
+                        <ul class="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+                            <li class="block antialiased font-mono text-lg font-black leading-normal text-blue-gray-900 capitalize">
+                                New User? <a href="/signup" class="text-green-900">Sign Up</a>
+                            </li>
+                           
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div> 
+    </div>
+</div>
+   
+<div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
             <h6 class="py-6">Login to the account</h6>
             <form action="/session" method="post">
