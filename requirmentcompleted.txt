@@ -17,4 +17,5 @@ Admins can create a ballot of questions in an election
     * 3 Feature left
 
 Admins can register voters
-    * Working on this. 
+    Admins should be able to register voters in an election.
+    When adding a voter, admins should enter a voter ID and a voter password.

@@ -250,6 +250,34 @@ app.post(
     }
   }
 );
+// voters add request
+app.post(
+  "/voters/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if(!request.body.voter_id)
+    {
+      request.flash("error", "Voter ID can't be empty");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+    if(!request.body.password)
+    {
+      request.flash("error", "Password can't be empty");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }  
+    try{
+      await Voters.addVoter(
+        request.body.voter_id,
+        await bcrypt.hash(request.body.password, saltRounds),
+        request.params.eid
+      );
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+    catch(error){
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+  }
+);
 
 
 module.exports = app;

@@ -18,7 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "voterId",
       });
     }
+    static addVoter(voterId, password, electionId) {
+      return this.create({
+        voterId,
+        password,
+        electionId,
+      });
+    }
   }
+  
   Voters.init({
     voterId: DataTypes.STRING,
     password: DataTypes.STRING
