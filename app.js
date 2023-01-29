@@ -20,12 +20,14 @@ const flash = require('connect-flash');
 app.use(express.urlencoded({extended: false}));
 const path = require('path');
 
+// eslint-disable-next-line no-undef
 app.set('views',path.join(__dirname,'views'));
 
 // seting the ejs is the engine
 app.set('view engine', 'ejs');
 
 // setting the css folder 
+// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
