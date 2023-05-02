@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<%= csrfToken %>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+   
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/styles.css" rel="stylesheet"> 
     <title><%= title%></title>
@@ -67,6 +69,7 @@
                     }
                     else{ 
                        %>
+                       
                        <table class="table-auto border border-collapse border-slate-400 max-w-prose">
                         <tr>
                             <th class="border border-slate-300">S.No.</th>
@@ -79,6 +82,32 @@
                        <%
                         for(let i = 0; i < election.Questions.length; i++) {
                         %>
+                        <div class="p-3 border">
+                            <h1 class="text-gray-900 text-center text-2xl">Question <%=i+1%></h1>
+                            <div class="grid grid-cols-2">
+                                <div class="bg-gray-500 p-2 m-1">
+                                    <span class="text-lg"><%=election.Questions[i].title%></span>
+                                </div>
+                                <div class="bg-gray-400 p-2 m-1">
+                                    <p><%=election.Questions[i].description%></p>
+                                </div>
+                            </div>
+                            <form action="/question/<%= election.id %>" method="post" class="border-2">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                <div class="grid grid-cols-3">
+                                            <div class="col-span-2">
+                                                <input class="border border-gray-700 text-gray-900 rounded p-2 w-full" type="text" name="Option" placeholder="Option">
+                                            </div>
+                                            <div>
+                                                <button class="px-2 py-2 m-1 font-semibold text-sm bg-green-500 text-white rounded-none shadow-sm float-right"><span><i class="bi bi-plus-circle-fill"></i></span>&nbsp;Add</button>
+                                            </div>
+                                    
+                                </div>
+                            </form>
+                            
+                           
+
+                        </div>
                         <tr>
                             <td class="border border-slate-500"><%=i+1%></td>
                             <td class="border border-slate-500"><%=election.Questions[i].title%></td>
