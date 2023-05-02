@@ -28,18 +28,24 @@
             <div class="col-start-2 col-span-4">
                 <h1 class="text-center">Welcome the Election Ballot(Question/Voters)</h1>
                 <h2 class="text-center">Election Name: <%=election.name %></h2>
+                <div class="grid grid-cols-3 m-1">
+                    <div class="col-start-2">
+                    <div class="text-center">
+                        <% if(messages && messages.error && messages.error.length > 0)  { %>
+                            <% for(var i=0; i<messages.error.length; i++) { %>
+                                
+                                <p class="rounded-full bg-red-900 border-2 p-2 text-red"><%= messages.error.length%> <%= messages.error[i] %></p>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    </div>
+                </div> 
             </div>
            
             <div class="col-start-2 col-span-2 border-gray-700">
                 
                 
-                    <div>
-                        <% if(messages && messages.error && messages.error.length > 0)  { %>
-                            <% for(var i=0; i<messages.error.length; i++) { %>
-                                    <p class="rounded-full border-2 p-2 bg-red-400 text-white"> <%= messages.error[i] %></p>
-                            <% } %>
-                          <% } %>
-                    </div> 
+                   
                     <div class="border">
                     <h1 class="text-red-900 text-center">Question</h1>
                     <form action="/question/<%= election.id %>" method="post" class="border-2">
@@ -69,15 +75,7 @@
                     }
                     else{ 
                        %>
-                       
-                       <table class="table-auto border border-collapse border-slate-400 max-w-prose">
-                        <tr>
-                            <th class="border border-slate-300">S.No.</th>
-                            <th class="border border-slate-300">Title</th> 
-                            <th class="border border-slate-300">Description</th>
-                            <th class="border border-slate-300">Question ID</th>
-
-                        </tr>
+                      
                    
                        <%
                         for(let i = 0; i < election.Questions.length; i++) {
@@ -92,11 +90,11 @@
                                     <p><%=election.Questions[i].description%></p>
                                 </div>
                             </div>
-                            <form action="/question/<%= election.id %>" method="post" class="border-2">
+                            <form action="/option/<%= election.id %>/<%= election.Questions[i].id %>" method="post" class="border-2">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                                 <div class="grid grid-cols-3">
                                             <div class="col-span-2">
-                                                <input class="border border-gray-700 text-gray-900 rounded p-2 w-full" type="text" name="Option" placeholder="Option">
+                                                <input class="border border-gray-700 text-gray-900 rounded p-2 w-full" type="text" name="title" placeholder="Option">
                                             </div>
                                             <div>
                                                 <button class="px-2 py-2 m-1 font-semibold text-sm bg-green-500 text-white rounded-none shadow-sm float-right"><span><i class="bi bi-plus-circle-fill"></i></span>&nbsp;Add</button>
@@ -104,20 +102,32 @@
                                     
                                 </div>
                             </form>
+                            <ul>
+                                <% for(let j = 0; j < election.Questions[i].Options.length; j++)
+                                { %>
+                                <li class="bg-grey-700 p-2 border border-white">
+                                    <div class="">
+                                        <span class="">
+                                            Option <%= j + 1 %>
+                                        </span>
+                                        <span class="text-blue-900">
+                                            <%= election.Questions[i].Options[j].title %>
+                                        </span>
+                                        
+                                       
+                                        </a>
+                                    </div>
+                                </li>
+                                <% } %>
+                          </ul>
                             
                            
 
                         </div>
-                        <tr>
-                            <td class="border border-slate-500"><%=i+1%></td>
-                            <td class="border border-slate-500"><%=election.Questions[i].title%></td>
-                            <td class="border border-slate-500"><%=election.Questions[i].description%></td>
-                            <td class="border border-slate-500"><%=election.Questions[i].id%></td>
-                        </tr>
                     <%
                         }
                     %>
-                       </table>
+                       
                         <%
                     }
                     %>
@@ -126,13 +136,7 @@
             <div class="col-start-4 col-span-2 border-gray-700">
                 
               
-                    <div>
-                        <% if(messages && messages.error && messages.error.length > 0)  { %>
-                            <% for(var i=0; i<messages.error.length; i++) { %>
-                                    <p class="rounded-full border-2 p-2 bg-red-400 text-white"> <%= messages.error[i] %></p>
-                            <% } %>
-                          <% } %>
-                    </div> 
+                    
                     <div class="border">
                     <h1 class="text-purple-900 text-center">Voters</h1>
                     <form action="/voters/<%= election.id %>" method="post" class="border-2">

@@ -281,5 +281,30 @@ app.post(
   }
 );
 
+app.post(
+  "/option/:eid/:qid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if(!request.body.title)
+    {
+      request.flash("error", "option title can't be empty");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }  
+    try{
+      await Options.addOptionToQuestion(
+        request.body.title,
+        request.params.qid
+      );
+      // request.flash("error", "Option has been added");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+    catch(error){
+      // console.log(error);
+      // request.flash("error", "catch Executed");
+      return response.redirect(`/elections/${request.params.eid}/ballotform`);
+    }
+  }
+);
+
 
 module.exports = app;
