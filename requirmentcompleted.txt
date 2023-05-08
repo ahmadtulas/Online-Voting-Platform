@@ -13,8 +13,9 @@ Admins can create a ballot of questions in an election
     Admins should be able to create a ballot - a list of questions they'd like voters to vote on.
     Admins should be able to add multiple questions to the ballot.
     For each question, admins should be able to fill in a short title, and a longer description.
+    For each question, it should be possible for the admin to add answer options; each of these answer options should be a short string.
     
-    * 3 Feature left
+    * 2 Feature left
 
 Admins can register voters
     Admins should be able to register voters in an election.

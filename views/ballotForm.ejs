@@ -106,13 +106,20 @@
                                 <% for(let j = 0; j < election.Questions[i].Options.length; j++)
                                 { %>
                                 <li class="bg-grey-700 p-2 border border-white">
-                                    <div class="">
-                                        <span class="">
+                                    <div class="grid grid-cols-4 border-2 p-3">
+                                        
+                                        <div class="">
                                             Option <%= j + 1 %>
-                                        </span>
-                                        <span class="text-blue-900">
-                                            <%= election.Questions[i].Options[j].title %>
-                                        </span>
+                                        </div>
+                                        <div class="text-blue-900 float-right">
+                                            <span class="float-right"><%= election.Questions[i].Options[j].title %></span>
+                                        </div>
+                                        <div>
+                                            <i class="bi bi-trash float-right"></i>
+                                        </div>
+                                        <div>
+                                            <i class="bi bi-pencil-square float-right"></i>
+                                        </div>
                                         
                                        
                                         </a>
