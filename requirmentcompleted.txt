@@ -16,6 +16,8 @@ Admins can create a ballot of questions in an election
     For each question, it should be possible for the admin to add answer options; each of these answer options should be a short string.
     
     * 2 Feature left
+   // working on this : 16th Sep 2023
+    Admins should be able to update the question title, description, and answer options. 
 
 Admins can register voters
     Admins should be able to register voters in an election.
