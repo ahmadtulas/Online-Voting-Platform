@@ -31,9 +31,7 @@
                 
                 <tr>
                     
-                    <th scope="col" class="px-6 py-3">
-                        Delete
-                    </th>
+                   
                     <th scope="col" class="px-6 py-3">
                         S.No.
                     </th>
@@ -41,7 +39,7 @@
                         Election Name
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Update/Edit
+                        Update / Delete
                      </th>
                     <th scope="col" class="px-6 py-3">
                         Manage Ballot(Question/Voters)
@@ -60,13 +58,18 @@
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 
                         
-                        <td class="px-6"><i class="bi bi-x-octagon-fill"></i></td>
+                        
                         <td class="px-6"><%= i+1%> </td>
                         <td class="px-6"><input type="text" id="electionName<%= elections[i].id %>" name="electionName" value="<%= elections[i].name %>"  ></td>
                         <td class="px-6">
                             <a href="#" onClick="ElectionNameUpdater(<%= elections[i].id %>)">
                                 <i class="bi bi-pencil-square"></i>
-                            </a></td>
+                            </a>
+                            <a href="#" onClick="ElectionNameDeleter(<%= elections[i].id %>)">
+                            <i class="bi bi-x-octagon-fill"></i>
+                            </a>
+                        </td>
+                          
                         <td class="px-6 btn btn-primary">
                             <a href="/elections/<%= elections[i].id %>/ballotForm">
                                 <i class="bi bi-kanban"></i>

@@ -236,6 +236,17 @@ async (request, response) => {
 
 );
 
+// delete a particular election
+app.delete(
+  "/elections/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+        await Elections.removeElectionByID(request.params.id, request.user.id);
+        return response.json({ success: true });
+      
+  }
+);
+
 // Election Ballot form Management  
 app.get('/elections/:id/ballotForm',
 connectEnsureLogin.ensureLoggedIn(),

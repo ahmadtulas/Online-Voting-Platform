@@ -16,7 +16,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Elections.hasMany(models.Questions, {
         foreignKey: "electionId",
+        onDelete: 'CASCADE',
+        hooks: true
       });
+      
+
       Elections.hasMany(models.Voters, {
         foreignKey: "electionId",
       });
@@ -38,6 +42,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     updateElection(name) {
       return this.update({ name });
+    }
+    static async removeElectionByID(id, userId) {
+      return this.destroy({
+        where: {
+          id,
+          userId,
+        },
+      });
     }
   }
   Elections.init({

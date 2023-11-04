@@ -31,6 +31,22 @@ function ElectionNameUpdater(id)
         //your code to be executed after 1 second
         document.getElementById("loading").style.display = "none";
       },1000);
-    
+}
 
+function ElectionNameDeleter(id)
+{
+    fetch(`/elections/${id}`, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _csrf: token,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            window.location.reload(true);
+          }
+        })
 }
