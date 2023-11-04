@@ -47,6 +47,7 @@ app.use(session({
 const {
   Users,Elections,Questions, Options, Voters, Votes
 } = require("./models");
+const e = require('connect-flash');
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -203,6 +204,35 @@ app.post(
         return response.redirect("/dashboard");
       }
     }
+
+);
+
+// to fetch particualr election data
+app.get(
+  "/elections/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+      
+        const election = await Elections.findByPk(request.params.id);
+        return response.json(election);
+         }
+);
+
+// update Election Name
+app.put('/updateElection/:id',
+connectEnsureLogin.ensureLoggedIn(),
+async (request, response) => {
+  const election = await Elections.findByPk(request.params.id);
+  console.log(request.body);
+  if(request.body.name !=election.name)
+  {
+    updatedElectionName = await election.updateElection(request.body.name);
+    request.flash("success", "Edited election name successfully");
+  }
+  else{
+    request.flash("success", "name is allready uptodate");
+  }
+}
 
 );
 

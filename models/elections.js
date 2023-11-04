@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         userId,
       });
     }
+    updateElection(name) {
+      return this.update({ name });
+    }
   }
   Elections.init({
     name: DataTypes.STRING,
