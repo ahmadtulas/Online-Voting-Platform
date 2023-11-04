@@ -1,6 +1,15 @@
 
+<div class="grid grid-cols-4" id="loading" style="display:none;">
+    <div class="col-start-2 col-span-2 p-4 my-4 rounded-lg">
+        <h1 class="flex justify-center">Please wait....
+            <img src="image/loading.gif" style="width:20px; "/>
+        </h1>
+    
+    </div>
+</div>
 <div class="grid grid-cols-6 py-3 mx-8">
     <div class="col-start-1 col-span-6">
+       
         <%
         if(elections.length==0)
         {
@@ -14,7 +23,9 @@
             <p>Total Election: <%=elections.length%></p>
         </div>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        
+        
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 
