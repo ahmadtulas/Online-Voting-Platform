@@ -210,6 +210,11 @@
                         <tr>
                             <td class="border border-slate-500"><%=i+1%></td>
                             <td class="border border-slate-500"><%=election.Voters[i].voterId%></td>
+                            <td>
+                                <a href="#" onClick="voterDeleter(<%= election.id %>,<%= election.Voters[i].id %>)">
+                                    <i class="bi bi-x-octagon-fill"></i>
+                              </a>
+                            </td>
                         </tr>
                     <%
                         }

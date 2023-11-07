@@ -433,6 +433,17 @@ app.delete(
   }
 );
 
+// to delete particular voter
+app.delete(
+  "/elections/:eid/voters/:vid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+        await Voters.delete(request.params.eid, request.params.vid);
+        return response.json({ success: true });    
+    }
+  
+);
+
 app.delete(
   "/elections/:eid/questions/:qid",
   connectEnsureLogin.ensureLoggedIn(),

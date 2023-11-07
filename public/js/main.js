@@ -139,3 +139,20 @@ function optionDeleter(eid,qid,oid) {
       }
     })
 }
+function voterDeleter(eid,vid)
+{
+  fetch(`/elections/${eid}/voters/${vid}`, {
+    method: "delete",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      if (res.ok) {
+        window.location.reload(true);
+      }
+    })
+}
