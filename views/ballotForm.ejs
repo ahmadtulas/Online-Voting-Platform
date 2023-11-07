@@ -127,14 +127,22 @@
                                             Option <%= j + 1 %>
                                         </div>
                                         <div class="text-blue-900 float-right">
-                                            <span class="float-right"><%= election.Questions[i].Options[j].title %></span>
+                                            <input type="text" value="<%= election.Questions[i].Options[j].title %>"
+                                id="optionTitle-<%= election.Questions[i].Options[j].id %>"/>
                                         </div>
-                                        <div>
-                                            <i class="bi bi-trash float-right"></i>
-                                        </div>
-                                        <div>
-                                            <i class="bi bi-pencil-square float-right"></i>
-                                        </div>
+
+                                        <a href="#" onClick="optionUpdater(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <%
+                                        if(election.Questions[i].Options.length>1) {
+                                        %>
+                                        <a href="#" onClick="optionDeleter(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
+                                        <i class="bi bi-x-octagon-fill"></i>
+                                        </a>
+                                        <% }%>
+                                        
+                                        
                                         
                                        
                                         </a>

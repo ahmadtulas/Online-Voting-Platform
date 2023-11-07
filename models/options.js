@@ -24,6 +24,17 @@ module.exports = (sequelize, DataTypes) => {
         questionId,
       });
     }
+    updateOption(title) {
+      return this.update({ title });
+    }
+    static async delete(id, questionId) {
+      return this.destroy({
+        where: {
+          id,
+          questionId,
+        },
+      });
+    }
   }
   Options.init({
     title: DataTypes.STRING

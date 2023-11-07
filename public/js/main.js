@@ -93,3 +93,49 @@ function QuestionDeleter(eid,qid)
       }
     })
 }
+
+function optionUpdater(eid, qid, oid) {
+  fetch(
+    `/elections/${eid}/questions/${qid}/options/${oid}`,
+    {}
+  )
+    .then((res) => res.json())
+    .then((option) => {
+      fetch(
+        `/elections/${eid}/questions/${qid}/options/${oid}`,
+        {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+            ...option,
+            title: document.getElementById("optionTitle-" + oid).value,
+          }),
+        }
+      )
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload(true);
+          }
+        })
+    });
+}
+
+function optionDeleter(eid,qid,oid) {
+  fetch(`/elections/${eid}/questions/${qid}/options/${oid}`, {
+    method: "delete",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      if (res.ok) {
+        window.location.reload(true);
+      }
+    })
+}

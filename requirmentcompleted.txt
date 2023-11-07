@@ -14,9 +14,6 @@ Admins can create a ballot of questions in an election
     Admins should be able to add multiple questions to the ballot.
     For each question, admins should be able to fill in a short title, and a longer description.
     For each question, it should be possible for the admin to add answer options; each of these answer options should be a short string.
-    
-    * 2 Feature left
-   // working on this : 7th Nov 2023
     Admins should be able to update the question title, description, and answer options. 
     Admins should be able to delete questions and answer options, as long as there's at least one question in the ballot.
 

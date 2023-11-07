@@ -389,6 +389,50 @@ app.put(
     }
 );
 
+// to fetch particular option 
+app.get(
+  "/elections/:eid/questions/:qid/options/:oid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {   
+        const option = await Options.findByPk(request.params.oid);
+        return response.json(option);    
+    }
+);
+
+// to update the option
+
+app.put(
+  "/elections/:eid/questions/:qid/options/:oid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+   
+      const option = await Options.findByPk(request.params.oid);
+     
+      let updated = false,
+        updatedOption;
+        if ("title" in request.body) {
+          updatedOption = await option.updateOption(request.body.title);
+          updated = true;
+        }
+
+        if (updated) {
+          return response.json(updatedOption);
+        }
+    }
+);
+
+// to delete the option
+app.delete(
+  "/elections/:eid/questions/:qid/options/:oid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    
+        await Options.delete(request.params.oid, request.params.qid);
+        return response.json({ success: true }); 
+   
+  }
+);
+
 app.delete(
   "/elections/:eid/questions/:qid",
   connectEnsureLogin.ensureLoggedIn(),
