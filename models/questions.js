@@ -28,6 +28,20 @@ module.exports = (sequelize, DataTypes) => {
         electionId,
       });
     }
+    titleUpdater(title) {
+      return this.update({ title });
+    }
+    descriptionUpdater(description) {
+      return this.update({ description });
+    }
+    static async delete(electionId,id) {
+      return this.destroy({
+        where: {
+          id,
+          electionId,
+        },
+      });
+    }
   }
   Questions.init({
     title: DataTypes.STRING,

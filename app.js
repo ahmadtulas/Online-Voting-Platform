@@ -348,4 +348,55 @@ app.post(
 );
 
 
+// to fetch the particualr question of an election 
+app.get(
+  "/elections/:eid/questions/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    
+        const question = await Questions.findByPk(request.params.id);
+        return response.json(question);
+         
+    }
+);
+
+// to update the particular question details
+app.put(
+  "/elections/:eid/questions/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    
+      const question = await Questions.findByPk(request.params.id);
+      console.log(request.body);
+      let updated = false,
+        updatedQuestion;
+     
+        if ("title" in request.body) {
+          updatedQuestion = await question.titleUpdater(request.body.title);
+          updated = true;
+        }
+
+        if ("description" in request.body) {
+          updatedQuestion = await question.descriptionUpdater(
+            request.body.description
+          );
+          updated = true;
+        }
+
+        if (updated) {
+          return response.json(updatedQuestion);
+        }
+    }
+);
+
+app.delete(
+  "/elections/:eid/questions/:qid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+        await Questions.delete(request.params.eid, request.params.qid);
+        return response.json({ success: true });  
+    }
+  
+);
+
 module.exports = app;

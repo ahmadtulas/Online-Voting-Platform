@@ -33,7 +33,7 @@ function ElectionNameUpdater(id)
       },1000);
 }
 
-function ElectionNameDeleter(id)
+function ElectionNameDeleter(eid,qid)
 {
     fetch(`/elections/${id}`, {
         method: "delete",
@@ -49,4 +49,47 @@ function ElectionNameDeleter(id)
             window.location.reload(true);
           }
         })
+}
+function QuestionUpdater(eid,qid)
+{
+  fetch(`/elections/${eid}/questions/${qid}`, {})
+  .then((res) => res.json())
+  .then((question) => {
+    fetch(`/elections/${eid}/questions/${qid}`, {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _csrf: token,
+        ...question,
+        title: document.getElementById("questionTitle-" + qid).value,
+        description: document.getElementById(
+          "questionDescription-" + qid
+        ).value,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      })
+  });
+}
+function QuestionDeleter(eid,qid)
+{
+  fetch(`/elections/${eid}/questions/${qid}`, {
+    method: "delete",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      if (res.ok) {
+        window.location.reload(true);
+      }
+    })
 }

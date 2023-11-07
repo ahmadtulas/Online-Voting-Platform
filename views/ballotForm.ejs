@@ -9,6 +9,7 @@
    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/styles.css" rel="stylesheet"> 
+    <script src="/js/main.js"></script>
     <title><%= title%></title>
    
 </head>
@@ -82,13 +83,27 @@
                         %>
                         <div class="p-3 border">
                             <h1 class="text-gray-900 text-center text-2xl">Question <%=i+1%></h1>
-                            <div class="grid grid-cols-2">
-                                <div class="bg-gray-500 p-2 m-1">
-                                    <span class="text-lg"><%=election.Questions[i].title%></span>
+                            <div class="grid grid-cols-3">
+                                <div class="bg-gray-300 p-2 m-1">
+                                    <input type="text" value="<%= election.Questions[i].title %>" id="questionTitle-<%= election.Questions[i].id %>"/>
                                 </div>
                                 <div class="bg-gray-400 p-2 m-1">
-                                    <p><%=election.Questions[i].description%></p>
+                                    <input type="text" value="<%= election.Questions[i].description %>" id="questionDescription-<%= election.Questions[i].id %>"/>
+                                   
                                 </div>
+                                <div class="bg-gray-100 m-1">
+                                    <a href="#" onClick="QuestionUpdater(<%= election.id %>,<%= election.Questions[i].id %>)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <%
+                                    if(election.Questions.length>1) {
+                                    %>
+                                    <a href="#" onClick="QuestionDeleter(<%= election.id %>,<%= election.Questions[i].id %>)">
+                                    <i class="bi bi-x-octagon-fill"></i>
+                                    </a>
+                                    <% }%>
+                                </div>
+                                
                             </div>
                             <form action="/option/<%= election.id %>/<%= election.Questions[i].id %>" method="post" class="border-2">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
