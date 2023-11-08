@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link href="./css/styles.css" rel="stylesheet"> 
+    <script src="/js/main.js"></script>
+    <title><%= title%></title>
+    </head>
+    <body>
+        <div class="grid grid-cols-6">
+            <div class="col-start-1 p-6">
+                <a class='text-red-700 rounded-full border-2 p-2 bg-green-700 text-white' href="/dashboard">Dashboard</a>
+           
+            </div>
+            <div class="col-start-6 p-6">
+                <a class='text-red-700 rounded-full border-2 p-2 bg-blue-700 text-white' href="/signout">signout</a>
+    
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4">
+            <div class="col-start-2 col-span-2 bg-gray-50 p-4 my-4 border rounded-lg">
+        <div class="flex justify-between items-center py-4 gap-2">
+          <p class="text-2xl"><%= election.name %></p>
+          <a class="blue-btn" href="/elections/<%= election.id %>/ballotForm"><i class="bi bi-kanban pr-2"></i>Ballot Form</a>
+        </div>
+        <div>
+          <ol>
+            <% for(let i = 0; i < election.Questions.length; i++) { %>
+            <li class="my-4 p-2 bg-gray-50 rounded-lg">
+              <div>
+                <h1 class="text-xl" id="questionTitle-<%= election.Questions[i].id %>">
+                  <%= i + 1 + ". " + election.Questions[i].title %>
+                </h1>
+                <h2 class="text-md text-gray-500" id="questionDescription-<%= election.Questions[i].id %>">
+                  <%= election.Questions[i].description %>
+                </h2>
+              </div>
+              <div>
+                  <% for(let j = 0; j < election.Questions[i].Options.length; j++)
+                  { %>
+                    <div class="bg-gray-200 rounded-xl p-3 my-2 hover:bg-green-300">
+                      <input
+                        name="question-<%= election.Questions[i].id %>"
+                        type="radio"
+                        value="<%= election.Questions[i].Options[j].id %>"
+                        id="questionTitle-<%= election.Questions[i].Options[j].id %>"
+                        required
+                      >
+                      <label for="questionTitle-<%= election.Questions[i].Options[j].id %>">
+                          <%= election.Questions[i].Options[j].title %>
+                      </label>
+                    </div>
+                  <% } %>
+              </div>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      </div>
+    </body>
+</html>

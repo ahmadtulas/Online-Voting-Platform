@@ -444,6 +444,26 @@ app.delete(
   
 );
 
+// Election Preview 
+
+app.get(
+  "/electionsPreview/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+     
+        const election = await Elections.findByPk(request.params.id, {
+          include: [{ model: Questions, include: Options }, { model: Voters }],
+        });
+        console.log(JSON.stringify(election, null, 2));
+        return response.render("electionPreview", {
+          title: 'Election Preview',
+          csrfToken: request.csrfToken(),
+          user: request.user,
+          election,
+        });
+    }
+);
+
 app.delete(
   "/elections/:eid/questions/:qid",
   connectEnsureLogin.ensureLoggedIn(),
