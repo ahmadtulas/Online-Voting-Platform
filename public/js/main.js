@@ -156,3 +156,33 @@ function voterDeleter(eid,vid)
       }
     })
 }
+
+function electionStarter(eid) {
+  fetch(
+    `/elections/${eid}`,
+    {}
+  )
+    .then((response) => response.json())
+    .then((election) => {
+      fetch(
+        `/updateElectionStatus/${eid}`,
+        {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+            ...election,
+            start: true
+          }),
+        }
+      )
+        .then((response) => {
+          console.log("response",response);
+          if (response.ok) {
+            window.location.reload(true);
+          }
+        })
+    });
+}

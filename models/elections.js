@@ -43,6 +43,45 @@ module.exports = (sequelize, DataTypes) => {
     updateElection(name) {
       return this.update({ name });
     }
+    
+    async doesElectionHaveEnoughQuestions(electionId) {
+      const election = await Elections.getElectionWithDetails(electionId);
+    
+      return election.Questions.length === 0;
+    }
+    
+    async doesElectionHaveEnoughOptions(electionId) {
+      const election = await Elections.getElectionWithDetails(electionId);
+    
+      const questions = election.Questions;
+      return questions.some((question) => question.Options.length < 2);
+    }
+    
+    async doesElectionHaveEnoughVoters(electionId) {
+      const election = await Elections.getElectionWithDetails(electionId);
+    
+      return election.Voters.length >= 2;
+    }
+    
+    static async getElectionWithDetails(electionId) {
+      return Elections.findByPk(electionId, {
+        include: [
+          {
+            model: sequelize.models.Questions,
+            include: sequelize.models.Options,
+          },
+          { model: sequelize.models.Voters, include: sequelize.models.Votes },
+        ],
+      });
+    }
+
+    setElectionStart(start) {
+      return this.update({ start });
+    }
+    setElectionEnd(end) {
+      return this.update({ end });
+    }
+      
     static async removeElectionByID(id, userId) {
       return this.destroy({
         where: {
@@ -54,8 +93,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Elections.init({
     name: DataTypes.STRING,
-    start: DataTypes.STRING,
-    end: DataTypes.STRING
+    start: DataTypes.BOOLEAN,
+    end: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Elections',

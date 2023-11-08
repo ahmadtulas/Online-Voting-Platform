@@ -180,6 +180,7 @@ app.get('/signout',(request,response, next) => {
   })
 })
 
+// add new election
 app.post(
   "/addElection",
   connectEnsureLogin.ensureLoggedIn(),
@@ -234,6 +235,73 @@ async (request, response) => {
   }
 }
 
+);
+
+
+app.put(
+  "/updateElectionStatus/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+      const election = await Elections.findByPk(request.params.id);
+      let updatedElection,
+        updated = false,
+        invalid = false;
+        if (
+          "start" in request.body &&
+          election.start === false &&
+          request.body.start === true
+        ) {
+          if (await election.doesElectionHaveEnoughQuestions(request.params.id)) {
+            request.flash(
+              "error",
+              "A minimum of 1 question is required to start the election."
+            );
+            invalid = true;
+          }
+
+          if (await election.doesElectionHaveEnoughOptions(request.params.id)) {
+            request.flash(
+              "error",
+              "A minimum of 2 options per question is required to start the election."
+            );
+            invalid = true;
+          }
+
+          if (await election.doesElectionHaveEnoughVoters(request.params.id)) {
+            request.flash(
+              "error",
+              "A minimum of 2 voters is required to start the election."
+            );
+            invalid = true;
+          }
+
+          if (!invalid) {
+            updatedElection = await election.setElectionStart(request.body.start);
+            updated = true;
+            request.flash("success", "Started election successfully");
+          }
+          updated = true;
+        }
+
+        if (
+          "end" in request.body &&
+          election.end === false &&
+          request.body.end === true
+        ) {
+          updatedElection = await election.setElectionEnd(request.body.end);
+          updated = true;
+          request.flash("success", "Ended election successfully");
+        }
+
+        if (!updated)
+          return response
+            .status(422)
+            .json({ message: "Missing name, start and/or end property" });
+
+        return response.json(updatedElection);
+    
+   
+  }
 );
 
 // delete a particular election

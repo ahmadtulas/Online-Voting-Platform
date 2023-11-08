@@ -21,5 +21,10 @@ Admins can register voters
     Admins should be able to register voters in an election.
     When adding a voter, admins should enter a voter ID and a voter password.
 
-Now start working on : 7 nov 2023 10:45 PM
-*** Admins should be able to launch an election; this makes it possible for registered voters to visit the public page of an election and cast their vote.
+
+//Working on this section
+Admins can launch an election 
+    • Admins should be able to launch an election; this makes it possible for registered voters to visit the public page of an election and cast their vote.
+    • Before launching an election, the admin should be shown a preview of what the ballot looks like. Admins should be blocked from launching an election if there is something wrong with the ballot - for example, if not every question has at least two answer options.
+    • Once an election is launched, it should not be possible for the administrator to edit the ballot of questions.
+
