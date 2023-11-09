@@ -35,7 +35,7 @@ function ElectionNameUpdater(id)
 
 function ElectionNameDeleter(eid,qid)
 {
-    fetch(`/elections/${id}`, {
+    fetch(`/elections/${eid}`, {
         method: "delete",
         headers: {
           "Content-Type": "application/json",
