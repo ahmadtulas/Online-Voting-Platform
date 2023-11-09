@@ -33,8 +33,11 @@
                     <a href="#" class="green-btn" onClick="electionStarter(<%= election.id %>)"><i class="bi bi-airplane pr-2"></i>Start Election</a>
                   <% } else if (election.start && !election.end) { %>
                     <a class="blue-btn" href="#"><i class="bi-megaphone-fill pr-2"></i>View Results</a>
-                    <a target="_blank" class="orange-btn" href="#"><i class="bi-box-arrow-up-right pr-2"></i>Public URL</a>
-                    <a href="#" class="red-btn" onClick="endElection()"><i class="bi bi-stop-circle-fill pr-2"></i>End Election</a>
+                    <a target="_blank" class="orange-btn" href="#"><i class="bi bi-binoculars pr-2"></i>Public URL</a>
+                    <a href="#" class="red-btn" onClick="electionender(<%= election.id %>)"><i class="bi bi-send-x-fill pr-2"></i>End Election</a>
+                  <% } if (election.end) {%>
+                    <h1 class="text-center" style="color:red"><i class="bi bi-send-x-fill pr-2"></i>Election Ended</h1>
+                    <a class="blue-btn" href="#"><i class="bi-megaphone-fill pr-2"></i>View Results</a>
                   <% } %>
                   
                  

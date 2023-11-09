@@ -186,3 +186,32 @@ function electionStarter(eid) {
         })
     });
 }
+
+function electionender(eid) {
+  fetch(
+    `/elections/${eid}`,
+    {}
+  )
+    .then((res) => res.json())
+    .then((election) => {
+      fetch(
+        `/updateElectionStatus/${eid}`,
+        {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+            ...election,
+            end: true
+          }),
+        }
+      )
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload(true);
+          }
+        })
+    });
+}
