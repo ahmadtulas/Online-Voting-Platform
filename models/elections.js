@@ -59,7 +59,8 @@ module.exports = (sequelize, DataTypes) => {
     
     async doesElectionHaveEnoughVoters(electionId) {
       const election = await Elections.getElectionWithDetails(electionId);
-    
+      //console.log("Election Data at Model level:", election);
+
       return election.Voters.length >= 2;
     }
     

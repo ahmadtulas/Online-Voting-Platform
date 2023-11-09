@@ -266,14 +266,17 @@ app.put(
             );
             invalid = true;
           }
+          //console.log("Election Data:", election);
 
-          if (await election.doesElectionHaveEnoughVoters(request.params.id)) {
+          if (!(await election.doesElectionHaveEnoughVoters(request.params.id))) {
             request.flash(
               "error",
               "A minimum of 2 voters is required to start the election."
             );
             invalid = true;
+          //console.log("doesElectionHaveEnoughVoters Called");
           }
+          
 
           if (!invalid) {
             updatedElection = await election.setElectionStart(request.body.start);
