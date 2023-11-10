@@ -373,30 +373,45 @@ app.post(
     }
   }
 );
-// voters add request
+
+// voter add request with checking of each voter should be unique for each election
 app.post(
   "/voters/:eid",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    if(!request.body.voter_id)
-    {
-      request.flash("error", "Voter ID can't be empty");
-      return response.redirect(`/elections/${request.params.eid}/ballotform`);
-    }
-    if(!request.body.password)
-    {
-      request.flash("error", "Password can't be empty");
-      return response.redirect(`/elections/${request.params.eid}/ballotform`);
-    }  
-    try{
+    try {
+    
+      const existingVoter = await Voters.findOne({
+        where: {
+          voterId: request.body.voter_id,
+          electionId: request.params.eid,
+        },
+      });
+
+      if (existingVoter) {
+        request.flash("error", "Voter ID must be unique for each election");
+        return response.redirect(`/elections/${request.params.eid}/ballotform`);
+      }
+
+      if (!request.body.voter_id) {
+        request.flash("error", "Voter ID can't be empty");
+        return response.redirect(`/elections/${request.params.eid}/ballotform`);
+      }
+
+      if (!request.body.password) {
+        request.flash("error", "Password can't be empty");
+        return response.redirect(`/elections/${request.params.eid}/ballotform`);
+      }
+
       await Voters.addVoter(
         request.body.voter_id,
         await bcrypt.hash(request.body.password, saltRounds),
         request.params.eid
       );
+
       return response.redirect(`/elections/${request.params.eid}/ballotform`);
-    }
-    catch(error){
+    } catch (error) {
+      console.error("Error:", error);
       return response.redirect(`/elections/${request.params.eid}/ballotform`);
     }
   }
