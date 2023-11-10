@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Online Voting</title>
+</head>
+<body class="bg-gray-200 min-h-screen flex items-center justify-center">
+
+<div class="text-black w-full md:w-1/2 lg:w-1/3 rounded-xl p-5 shadow-lg bg-white m-10">
+    <div class="flex justify-between items-center py-4 gap-2">
+        <p class="text-3xl font-semibold"><%= election.name %></p>
+        <p class="text-xl rounded rounded-lg bg-green-400 text-black p-2"><i class="bi bi-person-fill pr-2"></i><%= user.voterId %></p>
+    </div>
+    <div>
+        <form class="my-custom-form" action="/session/<%= election.id %>/voter" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="electionId" value="<%= election.id %>">
+            <input type="hidden" name="voterId" value="<%= user.id %>">
+            <ol>
+                <% for(let i = 0; i < election.Questions.length; i++) { %>
+                <li class="my-4 p-2 bg-gray-300 rounded-lg">
+                    <div>
+                        <h1 class="text-xl font-semibold" id="question-title-<%= election.Questions[i].id %>">
+                            <%= i + 1 + ". " + election.Questions[i].title %>
+                        </h1>
+                        <h2 class="text-md text-gray-700" id="question-description-<%= election.Questions[i].id %>">
+                            <%= election.Questions[i].description %>
+                        </h2>
+                    </div>
+                    <div>
+                        <% for(let j = 0; j < election.Questions[i].Options.length; j++) { %>
+                        <div class="bg-blue-400 rounded-xl p-2 my-2 hover:bg-blue-600">
+                            <input
+                                name="question-<%= election.Questions[i].id %>"
+                                type="radio"
+                                value="<%= election.Questions[i].Options[j].id %>"
+                                id="option-<%= election.Questions[i].Options[j].id %>"
+                                required
+                            >
+                            <label for="option-<%= election.Questions[i].Options[j].id %>">
+                                <%= election.Questions[i].Options[j].title %>
+                            </label>
+                        </div>
+                        <% } %>
+                    </div>
+                </li>
+                <% } %>
+            </ol>
+            <div class="grid place-items-center">
+                <button class="bg-purple-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-purple-800" type="submit">
+                    Submit Vote
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

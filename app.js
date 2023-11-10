@@ -85,27 +85,63 @@ passport.use(
   })
 }))
 
-passport.serializeUser((user, done)=>{
-  console.log("Serializing user in session",user.id)
-  let role;
 
-if (user instanceof Voters) {
-  role = "Voter";
-} else if (user instanceof Users) {
-  role = "User";
-}
-  done(null,user.id,role);
+passport.use(
+  "voter",
+  new LocalStrategy(
+    {
+      usernameField: "voterId",
+      passwordField: "password",
+      passReqToCallback: true,
+    },
+    (request, username, password, done) => {
+      Voters.findOne({
+        where: {
+          voterId: username,
+          electionId: request.params.eid,
+        },
+      })
+        .then(async (voter) => {
+          if (voter !== null) {
+            const result = await bcrypt.compare(password, voter.password);
+            if (result) return done(null, voter);
+            else return done(null, false, { message: "Incorrect Password" });
+          } else {
+            return done(null, false, { message: "Incorrect Voter Id" });
+          }
+        })
+        .catch((err) => {
+          return done(err);
+        });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  console.log("Serializing user in session", user.id);
+  let role,
+    userPrototype = Object.getPrototypeOf(user);
+
+  if (userPrototype === Voters.prototype) {
+    role = "Voters";
+  } else if (userPrototype === Users.prototype) {
+    role = "Users";
+  }
+
+  done(null, { id: user.id, role });
 });
 
-passport.deserializeUser((id,done) => {
-  Users.findByPk(id)
-  .then(user => {
-    done(null, user)
-  })
-  .catch(error =>{
-    done(error, null)
-  })
-})
+passport.deserializeUser(({ id, role }, done) => {
+  if (role === "Users") {
+    Users.findByPk(id)
+      .then((user) => done(null, user))
+      .catch((error) => done(error, null));
+  } else if (role === "Voters") {
+    Voters.findByPk(id)
+      .then((user) => done(null, user))
+      .catch((error) => done(error, null));
+  }
+});
 
 app.get('/', async (request, response)=>{
   if(request.user)
@@ -605,36 +641,72 @@ function handleVoterRedirect(response, user, election, electionId) {
 }
 // Ballot Casting Portal (Public Page) Logic End
 
-// authetication strategy for Voter only
+function ensureVoterLoggedIn(request, response, next) {
+  console.log("\nensureVoterLoggedIn Checkpoint\n");
+  
+  const electionId = request.params.id;
+  const redirectPath = `/ballotCastingPortal/${electionId}`;
 
-passport.use('voter', new LocalStrategy({
-  usernameField: 'voterId',
-  passwordField: 'password',
-  passReqToCallback: true,
-}, async (request, username, password, done) => {
-  try {
-    const voter = await Voters.findOne({
-      where: {
-        voterId: username,
-        electionId: request.params.eid,
-      },
-    });
+  console.log(`\nElection ID: ${electionId}\n`);
+  console.log(`Redirect Path: ${redirectPath}\n`);
 
-    if (voter) {
-      const isPasswordValid = await bcrypt.compare(password, voter.password);
+  const callback = connectEnsureLogin.ensureLoggedIn(redirectPath);
+  
 
-      if (isPasswordValid) {
-        return done(null, voter);
-      } else {
-        return done(null, false, { message: 'Password is not correct' });
-      }
+  return callback(request, response, (err) => {
+    if (err) {
+      console.error("\nensureVoterLoggedIn Error:", err, "\n");
+      response.status(500).send("Internal Server Error");
     } else {
-      return done(null, false, { message: 'Voter Id is not correct' });
+      console.log("\nensureVoterLoggedIn Successful\n");
+      next();
     }
-  } catch (err) {
-    return done(err);
+  });
+}
+
+// vote cast page  get request
+app.get("/ballotCastingPortal/:id/vote", ensureVoterLoggedIn, async (request, response) => {
+  console.log("\nlogin\n");
+  if (Object.getPrototypeOf(request.user) === Voters.prototype) {
+    try {
+      const election = await Elections.findByPk(request.params.id, {
+        include: [{ model: Questions, include: Options }, { model: Voters }],
+      });
+
+      if (!election.start) {
+        renderResponse("Voting is not allowed before the election begins.", 403);
+        return;
+      } else if (election.end) {
+        response.redirect(`/elections/${request.params.id}/results`);
+        return;
+      }
+
+      let voted = await Votes.hasVoterAlreadyVoted(
+        request.params.id,
+        request.user.id
+      );
+
+      if (voted) {
+        renderResponse("You've already cast your vote in this election! Please check back after the election ends to view the results.", 200, 'acknowledgement', { title: 'Acknowledgement', election });
+      } else {
+        response.render("ballotBox", { title: 'Ballot Box', csrfToken: request.csrfToken(), user: request.user, election });
+      }
+    } catch (err) {
+      console.log(err);
+      renderResponse("An error occurred while processing your request.", 400);
+    }
+  } else {
+    renderResponse("Only authenticated voters are authorized to cast votes.", 403);
   }
-}));
+
+  function renderResponse(message, statusCode, view, additionalData = {}) {
+    if (view) {
+      response.render(view, { ...additionalData, message });
+    } else {
+      response.status(statusCode).json({ success: false, message });
+    }
+  }
+});
 
 //session voter for login voter only
 app.post(
@@ -647,11 +719,18 @@ app.post(
     return callback(request, response, next);
   },
   (request, response) => {
-    console.log(request.user);
+    //console.log(request.user);
+    console.log("session voter called");
     response.redirect(`/ballotCastingPortal/${request.params.eid}/vote`);
   }
 );
 
+// check voter is authenticate or not
+const checkVoterAuthentication = (request, response, next) => {
+  const loginRedirect = `/ballotCastingPortal/${request.params.id}`;
+  const callback = connectEnsureLogin.ensureLoggedIn(loginRedirect);
+  return callback(request, response, next);
+};
 
 app.delete(
   "/elections/:eid/questions/:qid",

@@ -24,6 +24,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "voterId",
       });
     }
+    static async hasVoterAlreadyVoted(electionId, voterId) {
+      try {
+        const voteCount = await this.count({
+          where: { electionId, voterId },
+          attributes: [
+            [sequelize.fn("COUNT", sequelize.col("id")), "voteCount"],
+          ],
+          raw: true,
+        });
+    
+        return voteCount > 0;
+      } catch (error) {
+        throw error;
+      }
+    }   
   }
   Votes.init({
     electionId: DataTypes.INTEGER,
