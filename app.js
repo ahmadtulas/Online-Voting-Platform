@@ -56,7 +56,9 @@ app.use((request, response, next)=>{
   next();
 });
 
-passport.use(new LocalStrategy({
+passport.use(
+  "admin",
+  new LocalStrategy({
   usernameField: 'email',
   password: 'password',
 },(username, password, done) => {
@@ -85,7 +87,14 @@ passport.use(new LocalStrategy({
 
 passport.serializeUser((user, done)=>{
   console.log("Serializing user in session",user.id)
-  done(null,user.id);
+  let role;
+
+if (user instanceof Voters) {
+  role = "Voter";
+} else if (user instanceof Users) {
+  role = "User";
+}
+  done(null,user.id,role);
 });
 
 passport.deserializeUser((id,done) => {
@@ -162,7 +171,7 @@ app.get('/login',(request,response)=>{
   });
 });
 
-app.post('/session',passport.authenticate('local',{
+app.post('/session',passport.authenticate('admin',{
   failureRedirect: '/login',
   failureFlash: true,
 }),(request,response)=>{
@@ -534,6 +543,100 @@ app.get(
         });
     }
 );
+
+
+// Ballot Casting Portal (Public Page) Logic Start
+app.get("/ballotCastingPortal/:id", async (request, response) => {
+  try {
+    const election = await Elections.findByPk(request.params.id, {
+      include: [{ model: Questions, include: Options }, { model: Voters }],
+    });
+
+    if (!election) {
+      renderError(response, 404, "Not Found", "Election Id Not Valid");
+    } else if (!election.start) {
+      renderError(response, 403, "Forbidden", "The election is not yet open for voting");
+    } else if (election.end) {
+      response.redirect(`/elections/${request.params.id}/viewResults`);
+    } else {
+      handleVoterRedirect(response, request.user, election, request.params.id);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    renderError(response, 500, "Internal Server Error", "An unexpected error occurred");
+  }
+});
+
+function renderError(response, errorCode, errorStatus, errorMessage) {
+  response.status(errorCode).render("error", {
+    title: "error",
+    errorCode,
+    errorStatus,
+    errorMessage,
+  });
+}
+
+function handleVoterRedirect(response, user, election, electionId) {
+  if (user instanceof Voters) {
+    response.redirect(`/ballotCastingPortal/${electionId}/vote`);
+  } else {
+    response.render("ballotCastingPortal", {
+      title: "Ballot Casting Portal",
+      csrfToken: response.req.csrfToken(),
+      user,
+      election,
+    });
+  }
+}
+// Ballot Casting Portal (Public Page) Logic End
+
+// authetication strategy for Voter only
+
+passport.use('voter', new LocalStrategy({
+  usernameField: 'voterId',
+  passwordField: 'password',
+  passReqToCallback: true,
+}, async (request, username, password, done) => {
+  try {
+    const voter = await Voters.findOne({
+      where: {
+        voterId: username,
+        electionId: request.params.eid,
+      },
+    });
+
+    if (voter) {
+      const isPasswordValid = await bcrypt.compare(password, voter.password);
+
+      if (isPasswordValid) {
+        return done(null, voter);
+      } else {
+        return done(null, false, { message: 'Password is not correct' });
+      }
+    } else {
+      return done(null, false, { message: 'Voter Id is not correct' });
+    }
+  } catch (err) {
+    return done(err);
+  }
+}));
+
+//session voter for login voter only
+app.post(
+  "/sessionVoter/:eid",
+  function (request, response, next) {
+    const callback = passport.authenticate("voter", {
+      failureRedirect: `/ballotCastingPortal/${request.params.eid}`,
+      failureFlash: true,
+    });
+    return callback(request, response, next);
+  },
+  (request, response) => {
+    console.log(request.user);
+    response.redirect(`/ballotCastingPortal/${request.params.eid}/vote`);
+  }
+);
+
 
 app.delete(
   "/elections/:eid/questions/:qid",
