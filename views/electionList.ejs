@@ -36,6 +36,9 @@
                         S.No.
                     </th>
                     <th scope="col" class="px-6 py-3">
+                        Status
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Election Name
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -61,6 +64,27 @@
                         
                         
                         <td class="px-6"><%= i+1%> </td>
+                        <td class="px-6">
+                            <p class="flex-none p-2 rounded-lg text-white <%= 
+                            elections[i].start ? 
+                              (elections[i].end ? 'bg-pink-500' : 'bg-indigo-500') :
+                              'bg-teal-500'
+                          %>">
+                            <i class="bi <%= 
+                              elections[i].start ? 
+                                (elections[i].end ? 'bi-trophy-fill' : 'bi-play-circle-fill') :
+                                'bi-hourglass-split'
+                            %> pr-2"></i><%= 
+                              elections[i].start ? 
+                                (elections[i].end ? 'Completed' : 'In Progress') :
+                                'Not Started'
+                            %>
+                          </p>
+                          
+
+
+
+                        </td>
                         <td class="px-6"><input type="text" id="electionName<%= elections[i].id %>" name="electionName" value="<%= elections[i].name %>"  ></td>
                         <td class="px-6">
                             <a href="#" onClick="ElectionNameUpdater(<%= elections[i].id %>)">
