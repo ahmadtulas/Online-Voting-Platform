@@ -38,6 +38,14 @@ module.exports = (sequelize, DataTypes) => {
       } catch (error) {
         throw error;
       }
+    }
+    static addPoll(electionId, questionId, optionId, voterId) {
+      return this.create({
+        electionId,
+        questionId,
+        optionId,
+        voterId,
+      });
     }   
   }
   Votes.init({

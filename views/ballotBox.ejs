@@ -18,7 +18,7 @@
         <p class="text-xl rounded rounded-lg bg-green-400 text-black p-2"><i class="bi bi-person-fill pr-2"></i><%= user.voterId %></p>
     </div>
     <div>
-        <form class="my-custom-form" action="/session/<%= election.id %>/voter" method="post">
+        <form class="my-custom-form" action="/ballotCastingPortal/<%= election.id %>/poll" method="post">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="hidden" name="electionId" value="<%= election.id %>">
             <input type="hidden" name="voterId" value="<%= user.id %>">

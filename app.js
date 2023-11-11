@@ -687,7 +687,7 @@ app.get("/ballotCastingPortal/:id/vote", ensureVoterLoggedIn, async (request, re
       );
 
       if (voted) {
-        renderResponse("You've already cast your vote in this election! Please check back after the election ends to view the results.", 200, 'acknowledgement', { title: 'Acknowledgement', election });
+        renderResponse("You've already cast your vote in this election! Please check back after the election ends to view the results.", 200, 'confirmation', { title: 'Acknowledgement', election });
       } else {
         response.render("ballotBox", { title: 'Ballot Box', csrfToken: request.csrfToken(), user: request.user, election });
       }
@@ -731,6 +731,67 @@ const checkVoterAuthentication = (request, response, next) => {
   const callback = connectEnsureLogin.ensureLoggedIn(loginRedirect);
   return callback(request, response, next);
 };
+
+//vote poll by public user 
+app.post("/ballotCastingPortal/:id/poll", ensureVoterLoggedIn, async (request, response) => {
+  if (Object.getPrototypeOf(request.user) === Voters.prototype) {
+    try {
+      const election = await Elections.findByPk(request.params.id);
+
+      if (!election.start) {
+        response.status(403).render("error", {
+          code: "403",
+          status: "Forbidden",
+          message:
+            "Voting is not available at the moment as the election has not yet started.",
+        });
+      } else if (election.end) {
+        response.redirect(`/elections/${request.params.id}/results`);
+      }
+
+      let voted = await Votes.hasVoterAlreadyVoted(
+        request.params.id,
+        request.user.id
+      );
+      if (voted) {
+        response.render("confirmation", {
+          election,
+          message:
+            "Your vote has already been recorded for this election. Please check back after the election concludes to view the results.",
+        });
+      } else {
+        Object.keys(request.body).forEach(async (key) => {
+          if (key.indexOf("question-") !== -1) {
+            const questionKey = key.split("-");
+            console.log({
+              question: questionKey[questionKey.length - 1],
+              option: request.body[key],
+            });
+            await Votes.addPoll(
+              request.body.electionId,
+              questionKey[questionKey.length - 1],
+              request.body[key],
+              request.body.voterId
+            );
+          }
+        });
+        response.render("confirmation", {
+          election,
+          message: "Your vote has been successfully cast! Thank you for participating in the election process",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return response.redirect(`/ballotCastingPortal/${request.params.eid}`);
+    }
+  } else {
+    response.status(403).render("error", {
+      code: "403",
+      status: "Forbidden",
+      message: "Only authenticated voters are authorized to cast a vote",
+    });
+  }
+});
 
 app.delete(
   "/elections/:eid/questions/:qid",
