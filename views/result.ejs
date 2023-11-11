@@ -4,21 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Results | <%= election.name %> | Online Voting Platform</title>
+    <title>Results | <%= election.name %></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"></script>
   </head>
   <body class="bg-gray-100 grid place-items-center min-h-screen">
-    <div class="bg-gray-200 w-1/2 rounded-xl p-5 shadow-md m-10">
+    
+    <div class="bg-gray-200 md:w-full rounded-xl p-5 shadow-md m-10">
+        
       <div class="flex justify-between items-center py-4 gap-2">
         <p class="text-3xl font-semibold"><%= election.name %></p>
         <p class="text-3xl font-semibold"><%= voteStat.voted %> / <%= voteStat.total %> Votes</p>
       </div>
-      <div>
+      <div class="text-4xl font-semibold mb-8 text-center">Result</div>
+      
         <ol>
+            
         <% for(let i = 0; i < election.Questions.length; i++) { %>
-        <li class="my-4 p-2 bg-gray-100 rounded-lg">
-            <div class="flex justify-between items-center">
+            <div class="flex w-full border border-gray-300 border-solid mb-4 bg-gray-100 rounded-lg">
+        <div class="w-full md:w-1/2" id="">
+            <li class="p-2">
+            <div class="flex justify-between items-center" >
                 <div>
                     <h1 class="pl-4 text-xl font-semibold" id="question-title-<%= election.Questions[i].id %>">
                         <%= i + 1 + ". " + election.Questions[i].title %>
@@ -41,11 +48,50 @@
                         </div>
                     </div>
                 <% } %>
+                
             </div>
         </li>
+        </div>
+        <div class="w-full md:w-1/2">
+            <canvas id="chart-<%= i %>" width="400" height="200"></canvas>
+        </div>
+    </div> 
         <% } %>
-        </ol>
-      </div>
-    </div>
-  </body>
+     
+    </ol>
+      
+    
+</div>
+    <script>
+        window.onload = (event) => {
+            <% for(let i = 0; i < election.Questions.length; i++) { %>
+                var ctx<%= i %> = document.getElementById('chart-<%= i %>').getContext('2d');
+                var myChart<%= i %> = new Chart(ctx<%= i %>, {
+                    type: 'bar',
+                    data: {
+                        labels: [<% for(let j = 0; j < election.Questions[i].Options.length; j++) { %>
+                            '<%= election.Questions[i].Options[j].title %>',
+                            <% } %>],
+                        datasets: [{
+                            label: 'Percentage',
+                            data: [<% for(let j = 0; j < election.Questions[i].Options.length; j++) { %>
+                                <%= isNaN(Math.round(election.Questions[i].Options[j].Votes.length/voteStat.voted*100)) ? 0 : Math.round(election.Questions[i].Options[j].Votes.length/voteStat.voted*100) %>,
+                                <% } %>],
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            <% } %>
+        };
+    </script>  
+</body>
 </html>

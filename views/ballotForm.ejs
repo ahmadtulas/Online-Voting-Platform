@@ -32,6 +32,7 @@
                  <% if (!election.start && !election.end) { %>
                     <a href="#" class="green-btn" onClick="electionStarter(<%= election.id %>)"><i class="bi bi-airplane pr-2"></i>Start Election</a>
                   <% } else if (election.start && !election.end) { %>
+                    <h1 class="text-center" style="color:green"><i class="bi bi-send-check-fill pr-2"></i>Election Started</h1>
                     <a class="blue-btn" href="/electionResult/<%= election.id %>"><i class="bi-megaphone-fill pr-2"></i>View Results</a>
                     <a target="_blank" class="orange-btn" href="/ballotCastingPortal/<%= election.id %>/"><i class="bi bi-binoculars pr-2"></i>Public Page</a>
                     <a href="#" class="red-btn" onClick="electionender(<%= election.id %>)"><i class="bi bi-send-x-fill pr-2"></i>End Election</a>
@@ -58,9 +59,11 @@
             <div class="col-start-2 col-span-2 border-gray-700">
                 
                 
-                   
+                
                     <div class="border">
-                    <h1 class="text-red-900 text-center">Question</h1>
+                        <h1 class="text-red-900 text-center">Question</h1>
+                        <div class="border border-red-500 <%= election.start ? 'hidden' : '' %>">
+                       
                     <form action="/question/<%= election.id %>" method="post" class="border-2">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                         <div class="py-3">
@@ -74,10 +77,17 @@
                             class="border border-gray-700 text-gray-900 rounded p-2 w-full">
                         </div>
                         <div class="py-3">
-                            <button type="submit" class="text-white bg-red-700 hover:bg-red-900 font-medium rounded px-5 py-2">Add New Election</button>
+                            <button type="submit" class="text-white bg-red-700 hover:bg-red-900 font-medium rounded px-5 py-2" <% if (election.start) { %>disabled<% } %>>
+                                Add New Question
+                              </button>
+                              
+                              
+                   
                         </div>
                     </form>
+                    </div>
                     <%
+                
                     if(election.Questions.length==0)
                     {
                     %>
@@ -97,27 +107,29 @@
                             <h1 class="text-gray-900 text-center text-2xl">Question <%=i+1%></h1>
                             <div class="grid grid-cols-3">
                                 <div class="bg-gray-300 p-2 m-1">
-                                    <input type="text" value="<%= election.Questions[i].title %>" id="questionTitle-<%= election.Questions[i].id %>"/>
+                                    <input type="text" value="<%= election.Questions[i].title %>" id="questionTitle-<%= election.Questions[i].id %>"
+                                    class="<%= election.start ? 'cursor-not-allowed bg-gray-200' : '' %>"/>
                                 </div>
                                 <div class="bg-gray-400 p-2 m-1">
-                                    <input type="text" value="<%= election.Questions[i].description %>" id="questionDescription-<%= election.Questions[i].id %>"/>
+                                    <input type="text" value="<%= election.Questions[i].description %>" id="questionDescription-<%= election.Questions[i].id %>"
+                                    class="<%= election.start ? 'cursor-not-allowed bg-gray-200' : '' %>"/>
                                    
                                 </div>
                                 <div class="bg-gray-100 m-1">
-                                    <a href="#" onClick="QuestionUpdater(<%= election.id %>,<%= election.Questions[i].id %>)">
+                                    <a href="#" class="<%= election.start ? 'hidden' : '' %>" onClick="QuestionUpdater(<%= election.id %>,<%= election.Questions[i].id %>)">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <%
                                     if(election.Questions.length>1) {
                                     %>
-                                    <a href="#" onClick="QuestionDeleter(<%= election.id %>,<%= election.Questions[i].id %>)">
+                                    <a href="#" class="<%= election.start ? 'hidden' : '' %>" onClick="QuestionDeleter(<%= election.id %>,<%= election.Questions[i].id %>)">
                                     <i class="bi bi-x-octagon-fill"></i>
                                     </a>
                                     <% }%>
                                 </div>
                                 
                             </div>
-                            <form action="/option/<%= election.id %>/<%= election.Questions[i].id %>" method="post" class="border-2">
+                            <form action="/option/<%= election.id %>/<%= election.Questions[i].id %>" method="post" class="border-2 <%= election.start ? 'hidden' : '' %>">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                                 <div class="grid grid-cols-3">
                                             <div class="col-span-2">
@@ -140,16 +152,17 @@
                                         </div>
                                         <div class="text-blue-900 float-right">
                                             <input type="text" value="<%= election.Questions[i].Options[j].title %>"
-                                id="optionTitle-<%= election.Questions[i].Options[j].id %>"/>
+                                id="optionTitle-<%= election.Questions[i].Options[j].id %>"
+                                class="<%= election.start ? 'cursor-not-allowed bg-gray-200' : '' %>" />
                                         </div>
 
-                                        <a href="#" onClick="optionUpdater(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
+                                        <a href="#" class="<%= election.start ? 'hidden' : '' %>" onClick="optionUpdater(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                         <%
                                         if(election.Questions[i].Options.length>1) {
                                         %>
-                                        <a href="#" onClick="optionDeleter(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
+                                        <a href="#" class="<%= election.start ? 'hidden' : '' %>" onClick="optionDeleter(<%= election.id %>,<%= election.Questions[i].id %>, <%= election.Questions[i].Options[j].id %>)">
                                         <i class="bi bi-x-octagon-fill"></i>
                                         </a>
                                         <% }%>
