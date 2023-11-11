@@ -608,7 +608,7 @@ app.get("/ballotCastingPortal/:id", async (request, response) => {
     } else if (!election.start) {
       renderError(response, 403, "Forbidden", "The election is not yet open for voting");
     } else if (election.end) {
-      response.redirect(`/elections/${request.params.id}/viewResults`);
+      response.redirect(`/electionResult/${request.params.id}`);
     } else {
       handleVoterRedirect(response, request.user, election, request.params.id);
     }
@@ -677,7 +677,7 @@ app.get("/ballotCastingPortal/:id/vote", ensureVoterLoggedIn, async (request, re
         renderResponse("Voting is not allowed before the election begins.", 403);
         return;
       } else if (election.end) {
-        response.redirect(`/elections/${request.params.id}/results`);
+        response.redirect(`/electionResult/${request.params.id}`);
         return;
       }
 
@@ -740,13 +740,14 @@ app.post("/ballotCastingPortal/:id/poll", ensureVoterLoggedIn, async (request, r
 
       if (!election.start) {
         response.status(403).render("error", {
-          code: "403",
-          status: "Forbidden",
-          message:
+          title:"error",
+          errorCode: "403",
+          errorStatus: "Forbidden",
+          errorMessage:
             "Voting is not available at the moment as the election has not yet started.",
         });
       } else if (election.end) {
-        response.redirect(`/elections/${request.params.id}/results`);
+        response.redirect(`/electionResult/${request.params.id}`);
       }
 
       let voted = await Votes.hasVoterAlreadyVoted(
@@ -786,12 +787,91 @@ app.post("/ballotCastingPortal/:id/poll", ensureVoterLoggedIn, async (request, r
     }
   } else {
     response.status(403).render("error", {
-      code: "403",
-      status: "Forbidden",
-      message: "Only authenticated voters are authorized to cast a vote",
+      title:"error",
+      errorCode: "403",
+      errorStatus: "Forbidden",
+      errorMessage: "Only authenticated voters are authorized to cast a vote",
     });
   }
 });
+
+// election result
+app.get("/electionresult/:id", async (request, response) => {
+  try {
+    const electionId = request.params.id;
+    const election = await Elections.findByPk(electionId, {
+      include: [
+        { model: Questions, include: [{ model: Options, include: Votes }] },
+        { model: Voters, include: Votes },
+      ],
+    });
+
+    if (!election) {
+      return response.status(404).render("error", {
+        title:"error",
+        errorCode: "404",
+        errorStatus: "Not Found",
+        errorMessage: "Election Id is not correct",
+      });
+    }
+
+    const isUserAuthenticated = request.user instanceof Users;
+    const isAdmin = isUserAuthenticated && request.user.role === "Users";
+    const hasElectionEnded = election.end;
+    const hasElectionStart = election.start;
+
+    if (isUserAuthenticated && hasElectionStart){
+      const votedVoters = election.Voters.filter((voter) => voter.Votes.length !== 0);
+      const voteStat = {
+        voted: votedVoters.length,
+        total: election.Voters.length,
+      };
+
+      console.log(JSON.stringify(election, null, 2));
+      return response.render("result", { voteStat, election });
+    }
+    if (hasElectionStart && hasElectionEnded){
+      const votedVoters = election.Voters.filter((voter) => voter.Votes.length !== 0);
+      const voteStat = {
+        voted: votedVoters.length,
+        total: election.Voters.length,
+      };
+
+      console.log(JSON.stringify(election, null, 2));
+      return response.render("result", { voteStat, election });
+    }
+    if (!hasElectionStart) {
+      return response.status(403).render("error", {
+        title:"error",
+        errorCode: "403",
+        errorStatus: "Forbidden",
+        errorMessage: "Election is not Started till now",
+      });
+    }
+
+    if (!hasElectionEnded) {
+      return response.status(403).render("error", {
+        title:"error",
+        errorCode: "403",
+        errorStatus: "Forbidden",
+        errorMessage: "Please wait till the election end",
+      });
+    }
+
+    return response.status(403).render("error", {
+      title:"error",
+      errorCode: "403",
+      errorStatus: "Forbidden",
+      errorMessage: isUserAuthenticated
+        ? "Only authenticated voters are authorized to view the result"
+        : "Authentication is required to view results",
+    });
+  } catch (error) {
+    console.error(error);
+    return response.redirect(`/`);
+  }
+});
+
 
 app.delete(
   "/elections/:eid/questions/:qid",
