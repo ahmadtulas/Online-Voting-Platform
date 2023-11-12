@@ -1,6 +1,4 @@
-// NOTE Server - client architecture testing setup
 const request = require("supertest");
-// NOTE Used to parse markup language
 const cheerio = require("cheerio");
 
 const db = require("../models/index");
@@ -70,7 +68,26 @@ describe("User Test Suite", () => {
     let res = await testAgent.get("/dashboard");
     expect(res.statusCode).toBe(200);
   });
+
+  let electionId;
+  test("User A: Create a new election", async () => {
+    const addElectionPageResponse = await testAgent.get("/dashboard");
+    const csrfToken = extractTokenOfCSRF(addElectionPageResponse);
+    console.log("CSRF Token:", csrfToken);
+    const createElectionResponse = await testAgent
+      .post("/addElection")
+      .send({
+        electionName: "Test Election",
+        _csrf: csrfToken,
+      });
   
+    expect(createElectionResponse.statusCode).toBe(302);
+    electionId = 1;
+  });
   
-  
+
+  test("User A: Access Ballot Form for the created election", async () => {
+    const ballotFormResponse = await testAgent.get(`/elections/${electionId}/ballotForm`);
+    expect(ballotFormResponse.statusCode).toBe(200);
+  });
 });
