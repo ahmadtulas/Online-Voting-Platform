@@ -207,15 +207,28 @@ function checkUserRoleAndRenderError(request,response){
   return false;
 }
 app.get('/dashboard',connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
-  const currentUserId = request.user.id;
-  const elections = await Elections.findAllElectionOfUser(currentUserId); 
-  console.log("\nrequest.user ",request.user); 
-  console.log("\n");
-  response.render('dashboard',{
-    title: 'Dashboard',
-    elections,
-    csrfToken: request.csrfToken(),
-  });
+  if(request.user instanceof Users)
+  {
+    const currentUserId = request.user.id;
+    const elections = await Elections.findAllElectionOfUser(currentUserId); 
+    console.log("\nrequest.user ",request.user); 
+    console.log("\n");
+    response.render('dashboard',{
+      title: 'Dashboard',
+      elections,
+      csrfToken: request.csrfToken(),
+    });
+  }
+  else{
+    response.status(403).render("error", {
+      title:'error',
+      errorCode: "403",
+      errorStatus: "Forbidden",
+      errorMessage:
+        "Only administrators are authorized to view this page",
+    });
+  }
+  
 });
 
 app.get('/login',(request,response)=>{
@@ -385,6 +398,8 @@ app.delete(
 app.get('/elections/:id/ballotForm',
 connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
+      if(request.user instanceof Users)
+      {
       try{
       
       
@@ -404,6 +419,17 @@ connectEnsureLogin.ensureLoggedIn(),
       console.log(error);
       return response.status(422).json(error);
     }
+  }
+  else{
+    response.status(403).render("error", {
+      title:'error',
+      errorCode: "403",
+      errorStatus: "Forbidden",
+      errorMessage:
+        "Only administrators are authorized to view this page",
+    });
+  }
+  
 });
 // Question add request
 app.post(
