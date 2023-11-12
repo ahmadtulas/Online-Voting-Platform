@@ -90,4 +90,12 @@ describe("User Test Suite", () => {
     const ballotFormResponse = await testAgent.get(`/elections/${electionId}/ballotForm`);
     expect(ballotFormResponse.statusCode).toBe(200);
   });
+
+  test("User A: Sign out", async () => {
+ 
+    const signoutResponse = await testAgent.get("/signout");
+    expect(signoutResponse.statusCode).toBe(302);
+    expect(signoutResponse.header["location"]).toBe("/");
+  });
+  
 });
