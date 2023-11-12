@@ -7,6 +7,7 @@
     <meta name="google-site-verification" content="vV33ZVEVtwENdO4q8DiCI9_zD-b_TVPvV8zIj2q44vE" />
     <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet"> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
   
     <link href="./css/styles.css" rel="stylesheet"> 
@@ -22,7 +23,7 @@
                         <p class="text-blue-900 block antialiased font-sans text-sm leading-normal mr-4 ml-2 cursor-pointer py-1.5 font-bold">
                             Online Voting Platform  
                         </p>
-                        <div class="hidden lg:block">
+                        <div class="">
                             <ul class="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
                                 <li class="block antialiased font-mono text-lg font-black leading-normal text-blue-gray-900 capitalize">
                                     New User? <a href="/signup" class="text-green-900">Sign Up</a>
@@ -35,7 +36,7 @@
                     </div>
                 </nav>
             </div> 
-            <div class="absolute inset-1/4 flex items-center justify-center z-50">
+            <div class="absolute inset-1/4 flex items-center justify-center z-50 hidden lg:block">
                 <div class="bg-black bg-opacity-50 shadow-lg p-6 rounded-md text-white text-center">
                     <h1 class="text-2xl font-semibold mb-4">Welcome to the Online Voting Platform</h1>
                     <ul class="list-disc text-left mb-4">

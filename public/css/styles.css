@@ -3,8 +3,17 @@ body{
     /* background-color: green; */
     font-family: 'Courier New', Courier, monospace;
 }
-@media (min-width: 960px)
-.lg\:block {
-    display: block;
-    align-items:center;
+@media (min-width: 960px) {
+    .lg\\:block {
+        display: block;
+        align-items: center;
+    }
+   
 }
+.top-header{
+    display: flex;
+}
+
+
+
+
