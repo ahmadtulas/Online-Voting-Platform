@@ -54,5 +54,23 @@ describe("User Test Suite", () => {
     expect(authenticationResponse.statusCode).toBe(302);
     expect(authenticationResponse.header["location"]).toBe("/dashboard");
   });
+
+  test("User A: Log in", async () => {
+    let res = await testAgent.get("/login");
+    const csrfToken = extractTokenOfCSRF(res);
+    res = await testAgent.post("/session").send({
+      email: "ahmadjamalcs@gmail.com",
+      password: "plmnko",
+      _csrf: csrfToken,
+    });
+    expect(res.statusCode).toBe(302);
+  });
+  
+  test("User A: Access Dashboard after Log in", async () => {
+    let res = await testAgent.get("/dashboard");
+    expect(res.statusCode).toBe(200);
+  });
+  
+  
   
 });
