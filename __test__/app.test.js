@@ -40,4 +40,19 @@ describe("User Test Suite", () => {
 
     expect(registrationResponse.statusCode).toBe(302);
   });
+
+  test("User Authentication: Log in with registered credentials", async () => {
+    let loginResponse = await testAgent.get("/login");
+    const csrfToken = extractTokenOfCSRF(loginResponse);
+  
+    let authenticationResponse = await testAgent.post("/session").send({
+      email: "ahmadjamalcs@gmail.com",
+      password: "plmnko",
+      _csrf: csrfToken,
+    });
+  
+    expect(authenticationResponse.statusCode).toBe(302);
+    expect(authenticationResponse.header["location"]).toBe("/dashboard");
+  });
+  
 });
