@@ -19,36 +19,37 @@
         }
         else{
         %>
-        <div class="election-list text-right">
-            <p>Total Election: <%=elections.length%></p>
-        </div>
+        
 
         
         
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto bg-gray-100 dark:bg-gray-800 shadow-md sm:rounded-lg p-4 mb-4">
+            <div class="election-list text-right mb-4 p-4 sm:rounded-lg">
+                <p class="text-sm text-gray-700 dark:text-gray-400 font-semibold">Total Election: <%=elections.length%></p>
+            </div>
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gradient-to-r from-teal-500 to-indigo-500 dark:bg-gray-800 dark:text-gray-400">
                 
                 <tr>
                     
                    
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         S.No.
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         Status
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         Election Name
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         Update / Delete
                      </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         Manage Ballot(Question/Voters)
                     </th>
                    
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center text-white">
                         Preview Election
                     </th>
                    
@@ -57,12 +58,12 @@
             </thead>
             <tbody>
                 <% for(let i = 0; i < elections.length; i++) { %>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
                 
                         
                         
-                        <td class="px-6"><%= i+1%> </td>
-                        <td class="px-6">
+                        <td class="px-6 py-4 text-center"><%= i+1%> </td>
+                        <td class="px-6 py-4 text-center">
                             <p class="flex-none p-2 rounded-lg text-white <%= 
                             elections[i].start ? 
                               (elections[i].end ? 'bg-pink-500' : 'bg-indigo-500') :
@@ -83,24 +84,26 @@
 
 
                         </td>
-                        <td class="px-6"><input type="text" id="electionName<%= elections[i].id %>" name="electionName" value="<%= elections[i].name %>"  ></td>
-                        <td class="px-6">
-                            <a href="#" onClick="ElectionNameUpdater(<%= elections[i].id %>)">
+                        <td class="px-6 py-4 text-center"><input type="text" 
+                            class="text-center border border-gray-300 rounded-md p-2 transition-all duration-300 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            id="electionName<%= elections[i].id %>" name="electionName" value="<%= elections[i].name %>"  ></td>
+                        <td class="px-6 py-4 text-center">
+                            <a href="#" class="text-blue-500 hover:text-blue-700" onClick="ElectionNameUpdater(<%= elections[i].id %>)">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            <a href="#" onClick="ElectionNameDeleter(<%= elections[i].id %>)">
+                            <a href="#" class="text-red-500 hover:text-red-700" onClick="ElectionNameDeleter(<%= elections[i].id %>)">
                             <i class="bi bi-x-octagon-fill"></i>
                             </a>
                         </td>
                           
-                        <td class="px-6 btn btn-primary">
-                            <a href="/elections/<%= elections[i].id %>/ballotForm">
+                        <td class="px-6 py-4 btn btn-primary text-center">
+                            <a href="/elections/<%= elections[i].id %>/ballotForm" class="text-green-500 hover:text-green-700">
                                 <i class="bi bi-kanban"></i>
                             </a> 
                         </td>
                        
-                        <td class="px-6">
-                            <a href="/electionsPreview/<%= elections[i].id %>">
+                        <td class="px-6 py-4 text-center">
+                            <a href="/electionsPreview/<%= elections[i].id %>" class="text-purple-500 hover:text-purple-700">
                             <i class="bi bi-layout-text-sidebar-reverse"></i>
                                 </a>
                         </td>

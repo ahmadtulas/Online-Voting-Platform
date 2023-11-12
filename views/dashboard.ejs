@@ -11,10 +11,10 @@
     <title><%= title%></title>
     </head>
     <body>
-        <%- include('signout.ejs') %>
-        <div class="grid grid-cols-4">
-            <div class="col-start-2 col-span-2 bg-gray-50 p-4 my-4 border rounded-lg">
-                <h1 class="flex justify-center">Welcome to the dashboard</h1>
+        <%- include('header.ejs') %>
+        <div class="grid grid-cols-4 gap-4 mx-4">
+            <div class="col-start-2 col-span-2 bg-gray-50 p-4 my-4 border rounded-lg shadow-md">
+                <h1 class="text-2xl font-bold text-center mb-4">Welcome to the dashboard</h1>
                 <div>
                     <% if(messages && messages.error && messages.error.length > 0)  { %>
                         <% for(var i=0; i<messages.error.length; i++) { %>
@@ -28,7 +28,8 @@
                     <div class="py-3 md:ps-7 pt-2 pe-0  pb-4 space-y-2">
                         
                         <input type="text" name="electionName" placeholder="Enter the Election Name" 
-                        class="cursor-pointer truncate h-10 border border-gray-300 focus:outline-none focus:border-primary-400 focus:shadow-inner px-4 items-center font-semibold rounded text-sm me-2 block w-full">
+                        class="w-full h-10 px-4 border border-gray-300 focus:outline-none focus:border-primary-400 focus:shadow-inner rounded-md"
+                        >
                        
                     </div>
                    
