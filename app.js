@@ -190,9 +190,27 @@ app.post("/users", async (request, response) => {
   }
 });
 
+// function to redirect user in case of voter. 
+function checkUserRoleAndRenderError(request,response){
+  const userRole = request.user instanceof Users ? 'Users' : 'Voters';
+  if (userRole === 'Voters')
+  {
+    response.status(403).render("error", {
+      title:"error",
+      errorCode: "403",
+      errorStatus: "Forbidden",
+      errorMessage:
+        "You do not have permission to access this page.",
+    });
+    return true;
+  }
+  return false;
+}
 app.get('/dashboard',connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
   const currentUserId = request.user.id;
-  const elections = await Elections.findAllElectionOfUser(currentUserId);  
+  const elections = await Elections.findAllElectionOfUser(currentUserId); 
+  console.log("\nrequest.user ",request.user); 
+  console.log("\n");
   response.render('dashboard',{
     title: 'Dashboard',
     elections,
@@ -235,8 +253,8 @@ app.post(
       request.flash("error", "Election name can't be empty");
       return response.redirect("/dashboard");
     }  
-    try {
-        const loggedInUser = request.user.id;
+    try { 
+      const loggedInUser = request.user.id;
         await Elections.createNewElection(request.body.electionName, loggedInUser);
         request.flash("success", "New election has been added");
         return response.redirect("/dashboard");
@@ -367,7 +385,9 @@ app.delete(
 app.get('/elections/:id/ballotForm',
 connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
-    try{
+      try{
+      
+      
       const election = await Elections.findByPk(request.params.id, {
         include: [
           { model: Questions, include: Options },
@@ -820,6 +840,7 @@ app.get("/electionresult/:id", async (request, response) => {
     const hasElectionEnded = election.end;
     const hasElectionStart = election.start;
 
+  
     if (isUserAuthenticated && hasElectionStart){
       const votedVoters = election.Voters.filter((voter) => voter.Votes.length !== 0);
       const voteStat = {
@@ -838,7 +859,7 @@ app.get("/electionresult/:id", async (request, response) => {
       };
 
       console.log(JSON.stringify(election, null, 2));
-      return response.render("result", { voteStat, election });
+      return response.render("result", { voteStat, election});
     }
     if (!hasElectionStart) {
       return response.status(403).render("error", {

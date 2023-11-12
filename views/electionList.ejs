@@ -52,6 +52,10 @@
                     <th scope="col" class="px-6 py-3 text-center text-white">
                         Preview Election
                     </th>
+                    <th scope="col" class="px-6 py-3 text-center text-white">
+                        &nbsp;
+                    </th>
+
                    
                     
                 </tr>
@@ -106,6 +110,20 @@
                             <a href="/electionsPreview/<%= elections[i].id %>" class="text-purple-500 hover:text-purple-700">
                             <i class="bi bi-layout-text-sidebar-reverse"></i>
                                 </a>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            
+                                
+                                <% if (elections[i].start && !elections[i].end) { %>
+                                    <a href="/electionResult/<%= elections[i].id %>" class="text-red-500 hover:text-purple-700 rounded-lg" target="_blank">
+                                    Live Result
+                                    </a>
+                                <% } else if (elections[i].start && elections[i].end) { %>
+                                    <a href="/electionResult/<%= elections[i].id %>" class="text-red-500 hover:text-purple-700" target="_blank">
+                                    Final Result
+                                    </a>
+                                <% } %>        
+                            </a>
                         </td>
                         
                     </tr>
